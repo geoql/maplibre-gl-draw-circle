@@ -1,24 +1,24 @@
-const MapboxDraw = require('@mapbox/mapbox-gl-draw');
-const Constants = require('@mapbox/mapbox-gl-draw/src/constants');
-const doubleClickZoom = require('@mapbox/mapbox-gl-draw/src/lib/double_click_zoom');
-const dragPan = require('../utils/drag_pan');
-const circle = require('@turf/circle').default;
-const distance = require('@turf/distance').default;
-const turfHelpers = require('@turf/helpers');
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import Constants from '@mapbox/mapbox-gl-draw/src/constants';
+import doubleClickZoom from '@mapbox/mapbox-gl-draw/src/lib/double_click_zoom';
+import dragPan from '../utils/drag-pan';
+import circle from '@turf/circle';
+import distance from '@turf/distance';
+import * as turfHelpers from '@turf/helpers';
 
-const DragCircleMode = {...MapboxDraw.modes.draw_polygon};
+const DragCircleMode = { ...MapboxDraw.modes.draw_polygon };
 
-DragCircleMode.onSetup = function(opts) {
+DragCircleMode.onSetup = function (opts) {
   const polygon = this.newFeature({
     type: Constants.geojsonTypes.FEATURE,
     properties: {
       isCircle: true,
-      center: []
+      center: [],
     },
     geometry: {
       type: Constants.geojsonTypes.POLYGON,
-      coordinates: [[]]
-    }
+      coordinates: [[]],
+    },
   });
 
   this.addFeature(polygon);
@@ -29,12 +29,12 @@ DragCircleMode.onSetup = function(opts) {
   this.updateUIClasses({ mouse: Constants.cursors.ADD });
   this.activateUIButton(Constants.types.POLYGON);
   this.setActionableState({
-    trash: true
+    trash: true,
   });
 
   return {
     polygon,
-    currentVertexPosition: 0
+    currentVertexPosition: 0,
   };
 };
 
@@ -51,7 +51,8 @@ DragCircleMode.onDrag = DragCircleMode.onMouseMove = function (state, e) {
     const distanceInKm = distance(
       turfHelpers.point(center),
       turfHelpers.point([e.lngLat.lng, e.lngLat.lat]),
-      { units : 'kilometers'});
+      { units: 'kilometers' },
+    );
     const circleFeature = circle(center, distanceInKm);
     state.polygon.incomingCoords(circleFeature.geometry.coordinates);
     state.polygon.properties.radiusInKm = distanceInKm;
@@ -60,7 +61,9 @@ DragCircleMode.onDrag = DragCircleMode.onMouseMove = function (state, e) {
 
 DragCircleMode.onMouseUp = DragCircleMode.onTouchEnd = function (state, e) {
   dragPan.enable(this);
-  return this.changeMode(Constants.modes.SIMPLE_SELECT, { featureIds: [state.polygon.id] });
+  return this.changeMode(Constants.modes.SIMPLE_SELECT, {
+    featureIds: [state.polygon.id],
+  });
 };
 
 DragCircleMode.onClick = DragCircleMode.onTap = function (state, e) {
@@ -68,10 +71,13 @@ DragCircleMode.onClick = DragCircleMode.onTap = function (state, e) {
   state.polygon.properties.center = [];
 };
 
-DragCircleMode.toDisplayFeatures = function(state, geojson, display) {
+DragCircleMode.toDisplayFeatures = function (state, geojson, display) {
   const isActivePolygon = geojson.properties.id === state.polygon.id;
-  geojson.properties.active = (isActivePolygon) ? Constants.activeStates.ACTIVE : Constants.activeStates.INACTIVE;
+  geojson.properties.active = isActivePolygon
+    ? Constants.activeStates.ACTIVE
+    : Constants.activeStates.INACTIVE;
   return display(geojson);
 };
 
-module.exports = DragCircleMode;
+export default DragCircleMode;
+export { DragCircleMode };
