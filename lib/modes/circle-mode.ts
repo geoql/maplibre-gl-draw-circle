@@ -1,22 +1,28 @@
 import { modes } from '@mapbox/mapbox-gl-draw';
-import { geojsonTypes, cursors, types, modes as _modes } from '@mapbox/mapbox-gl-draw/src/constants';
+import {
+  geojsonTypes,
+  cursors,
+  types,
+  modes as _modes,
+} from '@mapbox/mapbox-gl-draw/src/constants';
 import { disable } from '@mapbox/mapbox-gl-draw/src/lib/double_click_zoom';
 import circle from '@turf/circle';
+import type { DrawCustomMode } from '@mapbox/mapbox-gl-draw';
 
-const CircleMode = {...modes.draw_polygon};
+const CircleMode: DrawCustomMode = { ...modes.draw_polygon };
 const DEFAULT_RADIUS_IN_KM = 2;
 
-CircleMode.onSetup = function(opts) {
+CircleMode.onSetup = function (opts) {
   const polygon = this.newFeature({
     type: geojsonTypes.FEATURE,
     properties: {
       isCircle: true,
-      center: []
+      center: [],
     },
     geometry: {
       type: geojsonTypes.POLYGON,
-      coordinates: [[]]
-    }
+      coordinates: [[]],
+    },
   });
 
   this.addFeature(polygon);
@@ -26,17 +32,19 @@ CircleMode.onSetup = function(opts) {
   this.updateUIClasses({ mouse: cursors.ADD });
   this.activateUIButton(types.POLYGON);
   this.setActionableState({
-    trash: true
+    trash: true,
+    combineFeatures: false,
+    uncombineFeatures: false,
   });
 
   return {
     initialRadiusInKm: opts.initialRadiusInKm || DEFAULT_RADIUS_IN_KM,
     polygon,
-    currentVertexPosition: 0
+    currentVertexPosition: 0,
   };
 };
 
-CircleMode.clickAnywhere = function(state, e) {
+CircleMode.clickAnywhere = function (state, e) {
   if (state.currentVertexPosition === 0) {
     state.currentVertexPosition++;
     const center = [e.lngLat.lng, e.lngLat.lat];
@@ -45,7 +53,10 @@ CircleMode.clickAnywhere = function(state, e) {
     state.polygon.properties.center = center;
     state.polygon.properties.radiusInKm = state.initialRadiusInKm;
   }
-  return this.changeMode(_modes.SIMPLE_SELECT, { featureIds: [state.polygon.id] });
+  return this.changeMode(_modes.SIMPLE_SELECT, {
+    featureIds: [state.polygon.id],
+  });
 };
 
 export default CircleMode;
+export { CircleMode };

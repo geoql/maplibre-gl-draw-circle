@@ -1,0 +1,35 @@
+name: 'The Pipeline'
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ci-${{ github.ref }}-1
+  cancel-in-progress: true
+
+jobs:
+  extract-branch:
+    name: 'Fetch branch'
+    runs-on: ubuntu-latest
+    outputs:
+      current_branch: ${{ steps.get-branch.outputs.current_branch }}
+    steps:
+      - name: Extract branch name 🕊
+        id: get-branch
+        run: echo "::set-output name=current_branch::${GITHUB_REF##*/}"
+  ci:
+    needs:
+      - extract-branch
+    name: 'CI'
+    uses: geoql/maplibre-gl-draw-circle/.github/workflows/ci.yml@main
+  ct:
+    needs:
+      - extract-branch
+      - ci
+    name: 'CT'
+    uses: geoql/maplibre-gl-draw-circle/.github/workflows/ct.yml@main
