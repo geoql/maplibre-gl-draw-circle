@@ -1,21 +1,28 @@
 {
-  "name": "mapbox-gl-draw-circle",
-  "version": "1.1.2",
-  "description": "A module to draw a circle using mapbox-gl-draw",
-  "main": "index",
+  "name": "maplibre-gl-draw-circle",
+  "version": "0.0.0",
+  "description": "A module to draw a circle on maplibre-gl map",
+  "main": "./dist/maplibre-gl-draw-circle.js",
+  "module": "./dist/maplibre-gl-draw-circle.js",
+  "umd": "./dist/maplibre-gl-draw-circle.umd.js",
+  "unpkg": "./dist/maplibre-gl-draw-circle.js",
+  "jsdelivr": "./dist/maplibre-gl-draw-circle.cjs",
+  "cdn": "./dist/maplibre-gl-draw-circle.cjs",
+  "exports": {
+    ".": {
+      "import": "./dist/maplibre-gl-draw-circle.js",
+      "require": "./dist/maplibre-gl-draw-circle.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "jest --all",
     "coverage": "jest --all --coverage"
   },
-  "keywords": [
-    "mapbox",
-    "geojson",
-    "circle",
-    "mapbox",
-    "draw"
-  ],
-  "author": "Anvesh Kumar Arrabochu",
-  "license": "MIT",
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "1.1.1",
     "@turf/along": "^6.0.1",
@@ -27,8 +34,37 @@
   "devDependencies": {
     "jest": "^24.5.0"
   },
+  "keywords": [
+    "maplibre",
+    "maplibre-gl",
+    "maplibre-gl-js",
+    "geojson",
+    "circle",
+    "draw"
+  ],
+  "author": {
+    "name": "Vinayak Kulkarni",
+    "email": "inbox.vinayak@gmail.com",
+    "url": "https://vinayakkulkarni.dev"
+  },
+  "contributors": [
+    {
+      "name": "Anvesh Kumar Arrabochu"
+    }
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "private": false,
+  "sideEffects": false,
+  "bugs": {
+    "url": "https://github.com/vinayakkulkarni/maplibre-gl-draw-circle/issues"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/iamanvesh/mapbox-gl-draw-circle"
-  }
+    "url": "https://github.com/vinayakkulkarni/maplibre-gl-draw-circle"
+  },
+  "homepage": "https://github.com/vinayakkulkarni/maplibre-gl-draw-circle#readme"
 }
