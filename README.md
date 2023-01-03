@@ -1,4 +1,20 @@
-# mapbox-gl-draw-circle
+# maplibre-gl-draw-circle 🌎
+
+[![CI](https://img.shields.io/github/actions/workflow/status/vinayakkulkarni/maplibre-gl-draw-circle/ci.yml?logo=github-actions&branch=main)](https://github.com/vinayakkulkarni/maplibre-gl-draw-circle/actions/workflows/ci.yml)
+[![CodeQL](https://img.shields.io/github/actions/workflow/status/vinayakkulkarni/maplibre-gl-draw-circle/codeql.yml?logo=github-actions&branch=main)](https://github.com/vinayakkulkarni/maplibre-gl-draw-circle/actions/workflows/codeql.yml)
+[![Ship.js Trigger](https://img.shields.io/github/actions/workflow/status/vinayakkulkarni/maplibre-gl-draw-circle/shipjs-trigger.yml?label=⛴%20Ship.js%20trigger)](https://github.com/vinayakkulkarni/maplibre-gl-draw-circle/actions/workflows/shipjs-trigger.yml)
+[![npm](https://img.shields.io/npm/dm/maplibre-gl-draw-circle?logo=npm)](http://npm-stat.com/charts.html?package=maplibre-gl-draw-circle)
+[![npm](https://img.shields.io/npm/v/maplibre-gl-draw-circle/latest?logo=npm)](https://www.npmjs.com/package/maplibre-gl-draw-circle)
+[![npm bundle size (version)](https://img.shields.io/bundlephobia/min/maplibre-gl-draw-circle/latest?label=@latest%20size&logo=vue.js)](https://bundlephobia.com/package/maplibre-gl-draw-circle@latest)
+[![npm type definitions](https://img.shields.io/npm/types/maplibre-gl-draw-circle)](https://github.com/vinayakkulkarni/maplibre-gl-draw-circle/blob/master/package.json)
+[![DeepScan grade](https://deepscan.io/api/teams/9055/projects/18331/branches/446995/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=9055&pid=18331&bid=446995)
+[![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/vinayakkulkarni/maplibre-gl-draw-circle)](https://snyk.io/test/github/vinayakkulkarni/maplibre-gl-draw-circle)
+[![GitHub contributors](https://img.shields.io/github/contributors/vinayakkulkarni/maplibre-gl-draw-circle?logo=github)](https://github.com/vinayakkulkarni/maplibre-gl-draw-circle/graphs/contributors)
+
+[![eslint](https://img.shields.io/npm/dependency-version/maplibre-gl-draw-circle/dev/eslint?logo=eslint)](https://eslint.org/)
+[![prettier](https://img.shields.io/npm/dependency-version/maplibre-gl-draw-circle/dev/prettier?logo=prettier)](https://prettier.io/)
+[![vite](https://img.shields.io/npm/dependency-version/maplibre-gl-draw-circle/dev/vite?logo=vite)](https://vitejs.dev/)
+[![typescript](https://img.shields.io/npm/dependency-version/maplibre-gl-draw-circle/dev/typescript?logo=TypeScript)](https://www.typescriptlang.org/)
 
 Adds support for drawing and editing a circle feature using [mapbox-gl-draw](https://github.com/mapbox/mapbox-gl-draw) library.
 
@@ -16,7 +32,7 @@ Adds support for drawing and editing a circle feature using [mapbox-gl-draw](htt
 ### Installation
 
 ```
-npm install mapbox-gl-draw-circle
+npm install maplibre-gl-draw-circle
 ```
 
 ```
@@ -25,7 +41,7 @@ import {
     DragCircleMode,
     DirectMode,
     SimpleSelectMode
-} from 'mapbox-gl-draw-circle';
+} from 'maplibre-gl-draw-circle';
 
 
 // userProperties has to be enabled
