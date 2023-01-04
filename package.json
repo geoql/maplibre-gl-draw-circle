@@ -1,6 +1,6 @@
 {
   "name": "@geoql/maplibre-gl-draw-circle",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A module to draw a circle on maplibre-gl map",
   "main": "./dist/maplibre-gl-draw-circle.js",
   "module": "./dist/maplibre-gl-draw-circle.js",
