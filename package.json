@@ -90,14 +90,18 @@
     "node": ">=18.0.0",
     "npm": ">=9.0.0"
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
   "private": false,
   "sideEffects": false,
   "bugs": {
-    "url": "https://github.com/vinayakkulkarni/maplibre-gl-draw-circle/issues"
+    "url": "https://github.com/geoql/maplibre-gl-draw-circle/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/vinayakkulkarni/maplibre-gl-draw-circle"
+    "url": "https://github.com/geoql/maplibre-gl-draw-circle"
   },
-  "homepage": "https://github.com/vinayakkulkarni/maplibre-gl-draw-circle#readme"
+  "homepage": "https://github.com/geoql/maplibre-gl-draw-circle#readme"
 }
