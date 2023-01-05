@@ -13,7 +13,7 @@ vi.mock('@turf/distance', () => ({
   default: vi.fn(),
 }));
 
-vi.mock('../../lib/utils/drag_pan', () => ({
+vi.mock('../../lib/utils/drag-pan', () => ({
   enable: vi.fn(),
   disable: vi.fn(),
 }));

@@ -23,25 +23,16 @@
       "esnext.asynciterable"
     ],
     "paths": {
-      "~/*": [
-        "./*"
-      ],
-      "@/*": [
-        "lib/*"
-      ]
+      "~/*": ["./*"],
+      "@/*": ["lib/*"]
     }
   },
   "types": [
     "@types/node",
     "@types/geojson",
-    "@types/mapbox__mapbox-gl-draw"
+    "@types/mapbox__mapbox-gl-draw",
+    "vitest/globals"
   ],
-  "include": [
-    "lib/**/*.ts",
-    "./shims/**/*.d.ts"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules"
-  ]
+  "include": ["lib/**/*.ts", "./shims/**/*.d.ts"],
+  "exclude": ["dist", "node_modules"]
 }

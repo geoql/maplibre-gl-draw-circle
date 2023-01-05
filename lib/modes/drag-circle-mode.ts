@@ -8,7 +8,7 @@ import * as turfHelpers from '@turf/helpers';
 
 const DragCircleMode = { ...MapboxDraw.modes.draw_polygon };
 
-DragCircleMode.onSetup = function (opts) {
+DragCircleMode.onSetup = function () {
   const polygon = this.newFeature({
     type: Constants.geojsonTypes.FEATURE,
     properties: {

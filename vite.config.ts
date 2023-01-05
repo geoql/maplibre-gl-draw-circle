@@ -52,4 +52,7 @@ export default defineConfig({
       insertTypesEntry: true,
     }),
   ],
+  test: {
+    globals: true,
+  },
 });

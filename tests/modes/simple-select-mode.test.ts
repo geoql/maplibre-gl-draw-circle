@@ -2,13 +2,12 @@ import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@mapbox/mapbox-gl-draw/src/lib/create_supplementary_points');
 vi.mock('@mapbox/mapbox-gl-draw/src/lib/move_features');
-vi.mock('../../lib/utils/crea');
+vi.mock('../../lib/utils/create-supplementary-points-for-circle');
 
 const createSupplementaryPoints = import(
   '@mapbox/mapbox-gl-draw/src/lib/create_supplementary_points'
 );
 const moveFeatures = import('@mapbox/mapbox-gl-draw/src/lib/move_features');
-const Constants = import('@mapbox/mapbox-gl-draw/src/constants');
 const createSupplementaryPointsForCircle = import(
   '../../lib/utils/create-supplementary-points-for-circle'
 );
