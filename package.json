@@ -37,7 +37,7 @@
     "coverage": "jest --all --coverage"
   },
   "dependencies": {
-    "@mapbox/mapbox-gl-draw": "1.1.1",
+    "@mapbox/mapbox-gl-draw": "1.4.0",
     "@turf/along": "^6.5.0",
     "@turf/circle": "^6.5.0",
     "@turf/distance": "^6.5.0",
