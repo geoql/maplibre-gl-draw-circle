@@ -64,7 +64,7 @@
     "shipjs": "^0.25.1",
     "typescript": "^4.9.4",
     "vite": "^4.0.4",
-    "vite-plugin-dts": "^1.7.3",
+    "vite-plugin-dts": "^2.3.0",
     "vitest": "^0.29.3"
   },
   "keywords": [
