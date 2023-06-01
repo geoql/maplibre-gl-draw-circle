@@ -65,7 +65,7 @@
     "typescript": "^4.9.4",
     "vite": "^4.0.4",
     "vite-plugin-dts": "^2.3.0",
-    "vitest": "^0.29.3"
+    "vitest": "^0.31.3"
   },
   "keywords": [
     "maplibre",
