@@ -45,7 +45,7 @@
     "@turf/length": "^6.5.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.6.5",
+    "@commitlint/cli": "^17.6.6",
     "@commitlint/config-conventional": "^17.6.5",
     "@types/geojson": "^7946.0.10",
     "@types/mapbox__mapbox-gl-draw": "^1.4.0",
