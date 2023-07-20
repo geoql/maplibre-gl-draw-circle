@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.6",
-    "@commitlint/config-conventional": "^17.6.5",
+    "@commitlint/config-conventional": "^17.6.7",
     "@types/geojson": "^7946.0.10",
     "@types/mapbox__mapbox-gl-draw": "^1.4.0",
     "@types/node": "^20.3.1",
