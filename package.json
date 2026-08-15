@@ -1,5 +1,5 @@
 {
-  "name": "maplibre-gl-draw-circle",
+  "name": "@geoql/maplibre-gl-draw-circle",
   "version": "0.1.1",
   "private": false,
   "description": "A module to draw a circle on maplibre-gl map",
