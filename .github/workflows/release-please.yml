@@ -68,8 +68,8 @@ jobs:
 
       - name: Publish to npm with provenance
         run: |
-          if npm view @geoql/maplibre-gl-draw-circle@${{ steps.version.outputs.version }} version >/dev/null 2>&1; then
-            echo "@geoql/maplibre-gl-draw-circle@${{ steps.version.outputs.version }} already published, skipping"
+          if npm view maplibre-gl-draw-circle@${{ steps.version.outputs.version }} version >/dev/null 2>&1; then
+            echo "maplibre-gl-draw-circle@${{ steps.version.outputs.version }} already published, skipping"
           else
             npm publish --provenance --access public --ignore-scripts
           fi
