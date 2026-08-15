@@ -18,6 +18,13 @@
 
 
 
+## [0.1.2](https://github.com/geoql/maplibre-gl-draw-circle/compare/v0.1.1...v0.1.2) (2026-08-15)
+
+
+### Bug Fixes
+
+* use scoped npm package name (@geoql/maplibre-gl-draw-circle) ([36aab95](https://github.com/geoql/maplibre-gl-draw-circle/commit/36aab95656f0b321354ab2670736f0dfb3e136aa))
+
 ## [0.1.1](https://github.com/geoql/maplibre-gl-draw-circle/compare/v0.1.0...v0.1.1) (2026-08-15)
 
 
