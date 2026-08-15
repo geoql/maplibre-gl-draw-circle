@@ -4,7 +4,7 @@
     "module": "esnext",
     "strict": true,
     "importHelpers": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -13,7 +13,6 @@
     "noEmit": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
-    "baseUrl": ".",
     "outDir": "./dist",
     "lib": [
       "esnext",
@@ -24,7 +23,7 @@
     ],
     "paths": {
       "~/*": ["./*"],
-      "@/*": ["lib/*"]
+      "@/*": ["./lib/*"]
     }
   },
   "types": [
@@ -33,6 +32,6 @@
     "@types/mapbox__mapbox-gl-draw",
     "vitest/globals"
   ],
-  "include": ["lib/**/*.ts", "./shims/**/*.d.ts"],
+  "include": ["lib/**/*.ts", "tests/**/*.ts", "./shims/**/*.d.ts"],
   "exclude": ["dist", "node_modules"]
 }

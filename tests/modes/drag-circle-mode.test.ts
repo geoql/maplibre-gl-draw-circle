@@ -1,9 +1,18 @@
-import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
-
-vi.mock('@mapbox/mapbox-gl-draw/src/lib/double_click_zoom', () => ({
-  enable: vi.fn(),
-  disable: vi.fn(),
-}));
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type Mock,
+} from 'vitest';
+import DragCircleModeDefault from '../../lib/modes/drag-circle-mode';
+import * as Constants from '../../vendor/mapbox-gl-draw/src/constants.js';
+import doubleClickZoom from '../../vendor/mapbox-gl-draw/src/lib/double_click_zoom.js';
+import dragPanDefault from '../../lib/utils/drag-pan';
+import circleImport from '@turf/circle';
+import distanceImport from '@turf/distance';
 
 vi.mock('@turf/circle', () => ({
   default: vi.fn(),
@@ -13,12 +22,104 @@ vi.mock('@turf/distance', () => ({
   default: vi.fn(),
 }));
 
-vi.mock('../../lib/utils/drag-pan', () => ({
-  enable: vi.fn(),
-  disable: vi.fn(),
+vi.mock('../../vendor/mapbox-gl-draw/src/lib/double_click_zoom.js', () => ({
+  default: {
+    enable: vi.fn(),
+    disable: vi.fn(),
+  },
 }));
 
-let DragCircleMode = import('../../lib/modes/drag-circle-mode');
+vi.mock('../../lib/utils/drag-pan', () => ({
+  default: {
+    enable: vi.fn(),
+    disable: vi.fn(),
+  },
+}));
+
+const circle = vi.mocked(circleImport);
+const distance = vi.mocked(distanceImport);
+const dragPan = vi.mocked(dragPanDefault);
+
+interface DragCircleModeTest {
+  onSetup(options?: Record<string, unknown>): Record<string, unknown>;
+  onMouseDown(
+    state: {
+      polygon: {
+        id?: string;
+        properties: {
+          center?: number[];
+          radiusInKm?: number;
+        };
+        incomingCoords?: Mock;
+      };
+    },
+    e: { lngLat: { lat: number; lng: number } },
+  ): void;
+  onTouchStart(
+    state: {
+      polygon: {
+        id?: string;
+        properties: {
+          center?: number[];
+          radiusInKm?: number;
+        };
+        incomingCoords?: Mock;
+      };
+    },
+    e: { lngLat: { lat: number; lng: number } },
+  ): void;
+  onDrag(
+    state: {
+      polygon: {
+        id?: string;
+        properties: {
+          center?: number[];
+          radiusInKm?: number;
+        };
+        incomingCoords?: Mock;
+      };
+    },
+    e: { lngLat: { lat: number; lng: number } },
+  ): void;
+  onMouseMove(
+    state: {
+      polygon: {
+        id?: string;
+        properties: {
+          center?: number[];
+          radiusInKm?: number;
+        };
+        incomingCoords?: Mock;
+      };
+    },
+    e: { lngLat: { lat: number; lng: number } },
+  ): void;
+  onClick(
+    state: { polygon: { properties: { center?: number[] } } },
+    e: unknown,
+  ): void;
+  onTap(
+    state: { polygon: { properties: { center?: number[] } } },
+    e: unknown,
+  ): void;
+  onMouseUp(state: { polygon: { id?: string } }, e: unknown): void;
+  onTouchEnd(state: { polygon: { id?: string } }, e: unknown): void;
+  toDisplayFeatures(
+    state: { polygon: { id?: string } },
+    geojson: { properties: { id?: string; active?: string } },
+    display: Mock,
+  ): void;
+  addFeature: Mock;
+  newFeature: Mock;
+  clearSelectedFeatures: Mock;
+  updateUIClasses: Mock;
+  activateUIButton: Mock;
+  setActionableState: Mock;
+  changeMode: Mock;
+}
+
+const DragCircleMode = DragCircleModeDefault as unknown as DragCircleModeTest;
+
 const mockFeature = {
   type: 'Feature',
   properties: {},
@@ -27,18 +128,10 @@ const mockFeature = {
     coordinates: [],
   },
 };
-const doubleClickZoom = import(
-  '@mapbox/mapbox-gl-draw/src/lib/double_click_zoom'
-);
-const Constants = import('@mapbox/mapbox-gl-draw/src/constants');
-const circle = import('@turf/circle');
-const dragPan = import('../../lib/utils/drag-pan');
-const distance = import('@turf/distance');
 
 describe('DragCircleMode', function () {
   beforeEach(() => {
-    DragCircleMode = {
-      ...DragCircleMode,
+    Object.assign(DragCircleMode, {
       addFeature: vi.fn(),
       newFeature: vi.fn(),
       clearSelectedFeatures: vi.fn(),
@@ -46,11 +139,11 @@ describe('DragCircleMode', function () {
       activateUIButton: vi.fn(),
       setActionableState: vi.fn(),
       changeMode: vi.fn(),
-    };
+    });
   });
 
   afterEach(() => {
-    DragCircleMode.changeMode.mockClear();
+    vi.clearAllMocks();
   });
 
   it('should setup state with a polygon', () => {
@@ -170,7 +263,7 @@ describe('DragCircleMode', function () {
       },
     };
     DragCircleMode.onMouseUp(state, {});
-    expect(dragPan.disable).toHaveBeenCalled();
+    expect(dragPan.enable).toHaveBeenCalled();
     expect(DragCircleMode.changeMode).toHaveBeenCalledWith(
       Constants.modes.SIMPLE_SELECT,
       { featureIds: ['test-id'] },
@@ -184,7 +277,7 @@ describe('DragCircleMode', function () {
       },
     };
     DragCircleMode.onTouchEnd(state, {});
-    expect(dragPan.disable).toHaveBeenCalled();
+    expect(dragPan.enable).toHaveBeenCalled();
     expect(DragCircleMode.changeMode).toHaveBeenCalledWith(
       Constants.modes.SIMPLE_SELECT,
       { featureIds: ['test-id'] },
@@ -201,6 +294,7 @@ describe('DragCircleMode', function () {
     const geojson = {
       properties: {
         id: 'test-id',
+        active: undefined as string | undefined,
       },
     };
 
@@ -212,12 +306,15 @@ describe('DragCircleMode', function () {
   });
 
   it('should adjust the geometry when onDrag is fired', function () {
-    distance.default.mockReturnValue(2);
-    circle.default.mockReturnValue({
+    distance.mockReturnValue(2);
+    circle.mockReturnValue({
+      type: 'Feature',
+      properties: {},
       geometry: {
+        type: 'Polygon',
         coordinates: [12, 2],
       },
-    });
+    } as unknown as Parameters<typeof circle.mockReturnValue>[0]);
     const state = {
       polygon: {
         properties: {
@@ -233,12 +330,15 @@ describe('DragCircleMode', function () {
   });
 
   it('should adjust the geometry when onMouseMove is fired', function () {
-    distance.default.mockReturnValue(2);
-    circle.default.mockReturnValue({
+    distance.mockReturnValue(2);
+    circle.mockReturnValue({
+      type: 'Feature',
+      properties: {},
       geometry: {
+        type: 'Polygon',
         coordinates: [12, 2],
       },
-    });
+    } as unknown as Parameters<typeof circle.mockReturnValue>[0]);
     const state = {
       polygon: {
         properties: {

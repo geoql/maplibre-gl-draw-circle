@@ -1,17 +1,18 @@
-import createVertex from '@mapbox/mapbox-gl-draw/src/lib/create_vertex';
-import type { Feature, Point } from 'geojson';
+import createVertex from '../../vendor/mapbox-gl-draw/src/lib/create_vertex.js';
+import type { Polygon } from 'geojson';
 
 type GeoJSON = {
-  type: Feature;
+  type: 'Feature';
   properties: {
-    meta: 'vertex';
-    parent: string;
-    coord_path: string;
-    active: boolean;
-    user_isCircle: boolean;
-    id: string;
+    meta?: 'vertex';
+    parent?: string;
+    coord_path?: string;
+    active?: boolean;
+    user_isCircle?: boolean;
+    id?: string;
+    [key: string]: unknown;
   };
-  geometry: Point;
+  geometry: Polygon;
 };
 
 /**
@@ -28,9 +29,12 @@ const createSupplementaryPointsForCircle = (g: GeoJSON): GeoJSON[] | null => {
   const supplementaryPoints: GeoJSON[] = [];
   const vertices = geometry.coordinates[0].slice(0, -1);
   for (let i = 0; i < vertices.length; i += Math.round(vertices.length / 4)) {
-    supplementaryPoints.push(
-      createVertex(properties.id, vertices.at(i), `0.${i}`, false),
-    );
+    const vertex = vertices[i];
+    if (vertex) {
+      supplementaryPoints.push(
+        createVertex(String(properties.id), vertex, `0.${i}`, false),
+      );
+    }
   }
   return supplementaryPoints;
 };

@@ -1,0 +1,12 @@
+{
+  "name": "@geoql/maplibre-gl-draw-circle",
+  "version": "0.1.0",
+  "exports": "./dist/index.js",
+  "publish": {
+    "include": [
+      "dist",
+      "README.md",
+      "LICENSE"
+    ]
+  }
+}

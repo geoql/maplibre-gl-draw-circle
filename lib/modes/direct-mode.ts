@@ -1,30 +1,35 @@
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import createSupplementaryPoints from '@mapbox/mapbox-gl-draw/src/lib/create_supplementary_points';
-import moveFeatures from '@mapbox/mapbox-gl-draw/src/lib/move_features';
-import Constants from '@mapbox/mapbox-gl-draw/src/constants';
-import constrainFeatureMovement from '@mapbox/mapbox-gl-draw/src/lib/constrain_feature_movement';
+import createSupplementaryPoints from '../../vendor/mapbox-gl-draw/src/lib/create_supplementary_points.js';
+import moveFeatures from '../../vendor/mapbox-gl-draw/src/lib/move_features.js';
+import * as Constants from '../../vendor/mapbox-gl-draw/src/constants.js';
+import constrainFeatureMovement from '../../vendor/mapbox-gl-draw/src/lib/constrain_feature_movement.js';
 import distance from '@turf/distance';
 import * as turfHelpers from '@turf/helpers';
 import circle from '@turf/circle';
 import { createSupplementaryPointsForCircle } from '../utils/create-supplementary-points-for-circle';
+import type { CircleDrawFeature, DirectModeState } from '../types';
+import type { Feature } from 'geojson';
 
 const DirectMode = MapboxDraw.modes.direct_select;
 
-DirectMode.dragFeature = (state, e, delta) => {
+DirectMode.dragFeature = function (state: DirectModeState, e, delta) {
   moveFeatures(this.getSelected(), delta);
-  this.getSelected()
+  const selected = this.getSelected() as CircleDrawFeature[];
+  selected
     .filter((feature) => feature.properties.isCircle)
     .map((circle) => circle.properties.center)
     .forEach((center) => {
-      center[0] += delta.lng;
-      center[1] += delta.lat;
+      if (center) {
+        center[0] += delta.lng;
+        center[1] += delta.lat;
+      }
     });
   state.dragMoveLocation = e.lngLat;
 };
 
-DirectMode.dragVertex = (state, e, delta) => {
+DirectMode.dragVertex = function (state: DirectModeState, e, delta) {
   if (state.feature.properties.isCircle) {
-    const center = state.feature.properties.center;
+    const center = state.feature.properties.center ?? [];
     const movedVertex = [e.lngLat.lng, e.lngLat.lat];
     const radius = distance(
       turfHelpers.point(center),
@@ -62,23 +67,30 @@ DirectMode.dragVertex = (state, e, delta) => {
   }
 };
 
-DirectMode.toDisplayFeatures = (state, geojson, push) => {
-  if (state.featureId === geojson.properties.id) {
-    geojson.properties.active = Constants.activeStates.ACTIVE;
-    push(geojson);
-    const supplementaryPoints = geojson.properties.user_isCircle
-      ? createSupplementaryPointsForCircle(geojson)
-      : createSupplementaryPoints(geojson, {
+DirectMode.toDisplayFeatures = function (
+  state: DirectModeState,
+  geojson,
+  push,
+) {
+  const feature = geojson as Feature & { properties: Record<string, unknown> };
+  if (state.featureId === feature.properties.id) {
+    feature.properties.active = Constants.activeStates.ACTIVE;
+    push(feature as Feature);
+    const supplementaryPoints = feature.properties.user_isCircle
+      ? createSupplementaryPointsForCircle(
+          feature as Parameters<typeof createSupplementaryPointsForCircle>[0],
+        )
+      : createSupplementaryPoints(feature as Feature, {
           map: this.map,
           midpoints: true,
           selectedPaths: state.selectedCoordPaths,
         });
-    supplementaryPoints.forEach(push);
+    supplementaryPoints?.forEach((p) => push(p));
   } else {
-    geojson.properties.active = Constants.activeStates.INACTIVE;
-    push(geojson);
+    feature.properties.active = Constants.activeStates.INACTIVE;
+    push(feature as Feature);
   }
-  this.fireActionable(state);
+  this.fireActionable?.(state);
 };
 
 export default DirectMode;

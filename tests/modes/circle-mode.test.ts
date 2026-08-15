@@ -1,15 +1,61 @@
-import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
-
-vi.mock('@mapbox/mapbox-gl-draw/src/lib/double_click_zoom', () => ({
-  enable: vi.fn(),
-  disable: vi.fn(),
-}));
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type Mock,
+} from 'vitest';
+import CircleModeDefault from '../../lib/modes/circle-mode';
+import * as Constants from '../../vendor/mapbox-gl-draw/src/constants.js';
+import doubleClickZoom from '../../vendor/mapbox-gl-draw/src/lib/double_click_zoom.js';
+import circleImport from '@turf/circle';
 
 vi.mock('@turf/circle', () => ({
   default: vi.fn(),
 }));
 
-let CircleMode = import('../../lib/modes/circle-mode');
+const circle = vi.mocked(circleImport);
+
+vi.mock('../../vendor/mapbox-gl-draw/src/lib/double_click_zoom.js', () => ({
+  default: {
+    enable: vi.fn(),
+    disable: vi.fn(),
+  },
+}));
+
+/**
+ * The mode is a plain object at runtime; its methods take `this` from the
+ * draw context and its custom hooks are assigned after the draw_polygon
+ * spread. Tests exercise those methods directly with mocked context
+ * methods, so the test surface re-types the module accordingly.
+ */
+interface CircleModeTest {
+  onSetup(options?: { initialRadiusInKm?: number }): Record<string, unknown>;
+  clickAnywhere(
+    state: {
+      currentVertexPosition: number;
+      initialRadiusInKm?: number;
+      polygon?: {
+        id?: string;
+        incomingCoords?: Mock;
+        properties?: Record<string, unknown>;
+      };
+    },
+    e: { lngLat: { lat: number; lng: number } },
+  ): void;
+  addFeature: Mock;
+  newFeature: Mock;
+  clearSelectedFeatures: Mock;
+  updateUIClasses: Mock;
+  activateUIButton: Mock;
+  setActionableState: Mock;
+  changeMode: Mock;
+}
+
+const CircleMode = CircleModeDefault as unknown as CircleModeTest;
+
 const mockFeature = {
   type: 'Feature',
   properties: {},
@@ -18,16 +64,10 @@ const mockFeature = {
     coordinates: [],
   },
 };
-const doubleClickZoom = import(
-  '@mapbox/mapbox-gl-draw/src/lib/double_click_zoom'
-);
-const Constants = import('@mapbox/mapbox-gl-draw/src/constants');
-const circle = import('@turf/circle');
 
 describe('CircleMode tests', () => {
   beforeEach(() => {
-    CircleMode = {
-      ...CircleMode,
+    Object.assign(CircleMode, {
       addFeature: vi.fn(),
       newFeature: vi.fn(),
       clearSelectedFeatures: vi.fn(),
@@ -35,11 +75,11 @@ describe('CircleMode tests', () => {
       activateUIButton: vi.fn(),
       setActionableState: vi.fn(),
       changeMode: vi.fn(),
-    };
+    });
   });
 
   afterEach(() => {
-    CircleMode.changeMode.mockClear();
+    vi.clearAllMocks();
   });
 
   it('should setup state with a polygon and initialRadius', () => {
@@ -96,12 +136,17 @@ describe('CircleMode tests', () => {
     CircleMode.onSetup({});
     expect(CircleMode.setActionableState).toHaveBeenCalledWith({
       trash: true,
+      combineFeatures: false,
+      uncombineFeatures: false,
     });
   });
 
   it('should generate a circle feature and change mode to simple select when clickAnywhere is invoked', () => {
-    circle.default.mockReturnValue({
+    circle.mockReturnValue({
+      type: 'Feature',
+      properties: {},
       geometry: {
+        type: 'Polygon',
         coordinates: [],
       },
     });
@@ -120,17 +165,19 @@ describe('CircleMode tests', () => {
 
     CircleMode.clickAnywhere(mockState, mockEvent);
     expect(mockState.currentVertexPosition).toBe(1);
-    expect(circle.default).toHaveBeenCalledWith([0, 0], 1);
+    expect(circle).toHaveBeenCalledWith([0, 0], 1);
     expect(CircleMode.changeMode).toHaveBeenCalledWith(
       Constants.modes.SIMPLE_SELECT,
-      { featureIds: [mockState.polygon.id] },
+      { featureIds: [mockState.polygon?.id] },
     );
   });
 
   it('should change mode to simple_select without adding a polygon to state if currentVertexPosition is not 0', () => {
     const mockState = {
       currentVertexPosition: 1,
-      polygon: {},
+      polygon: {
+        id: 'random_id',
+      },
     };
     const mockEvent = {
       lngLat: { lat: 0, lng: 0 },
@@ -140,7 +187,7 @@ describe('CircleMode tests', () => {
     expect(mockState.currentVertexPosition).toBe(1);
     expect(CircleMode.changeMode).toHaveBeenCalledWith(
       Constants.modes.SIMPLE_SELECT,
-      { featureIds: [mockState.polygon.id] },
+      { featureIds: [mockState.polygon?.id] },
     );
   });
 });

@@ -1,0 +1,84 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to publish (e.g., v1.2.2)'
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Release Please
+        id: release
+        uses: googleapis/release-please-action@v5
+        with:
+          token: ${{ secrets.RELEASE_PAT }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  publish:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name || github.event.inputs.tag }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.10
+        with:
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Resolve version
+        id: version
+        run: |
+          VERSION="${{ needs.release-please.outputs.version || github.event.inputs.tag }}"
+          echo "version=${VERSION#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to npm with provenance
+        run: |
+          if npm view maplibre-gl-draw-circle@${{ steps.version.outputs.version }} version >/dev/null 2>&1; then
+            echo "maplibre-gl-draw-circle@${{ steps.version.outputs.version }} already published, skipping"
+          else
+            npm publish --provenance --access public --ignore-scripts
+          fi
+
+      - name: Publish to JSR
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          if curl -fsS "https://jsr.io/@geoql/maplibre-gl-draw-circle/meta.json" | grep -q "\"$VERSION\""; then
+            echo "@geoql/maplibre-gl-draw-circle@$VERSION already on JSR, skipping"
+          else
+            pnpm dlx jsr publish --allow-dirty --allow-slow-types
+          fi

@@ -4,10 +4,11 @@ import {
   cursors,
   types,
   modes as _modes,
-} from '@mapbox/mapbox-gl-draw/src/constants';
-import { disable } from '@mapbox/mapbox-gl-draw/src/lib/double_click_zoom';
+} from '../../vendor/mapbox-gl-draw/src/constants.js';
+import doubleClickZoom from '../../vendor/mapbox-gl-draw/src/lib/double_click_zoom.js';
 import circle from '@turf/circle';
 import type { DrawCustomMode } from '@mapbox/mapbox-gl-draw';
+import type { CircleModeState } from '../types';
 
 const CircleMode: DrawCustomMode = { ...modes.draw_polygon };
 const DEFAULT_RADIUS_IN_KM = 2;
@@ -28,7 +29,7 @@ CircleMode.onSetup = function (opts) {
   this.addFeature(polygon);
 
   this.clearSelectedFeatures();
-  disable(this);
+  doubleClickZoom.disable(this);
   this.updateUIClasses({ mouse: cursors.ADD });
   this.activateUIButton(types.POLYGON);
   this.setActionableState({
@@ -44,7 +45,7 @@ CircleMode.onSetup = function (opts) {
   };
 };
 
-CircleMode.clickAnywhere = function (state, e) {
+CircleMode.clickAnywhere = function (state: CircleModeState, e) {
   if (state.currentVertexPosition === 0) {
     state.currentVertexPosition++;
     const center = [e.lngLat.lng, e.lngLat.lat];

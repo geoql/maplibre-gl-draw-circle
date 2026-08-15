@@ -1,58 +1,61 @@
-import { resolve } from 'path';
-import { defineConfig } from 'vite';
-import dts from 'vite-plugin-dts';
-import pkg from './package.json';
-
-const banner = `/*!
- * ${pkg.name} v${pkg.version}
- * ${pkg.description}
- * (c) ${new Date().getFullYear()} ${pkg.author.name}<${pkg.author.email}>
- * Released under the ${pkg.license} License
- */
-`;
+import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
-  build: {
-    target: 'esnext',
+  pack: {
+    entry: ['lib/index.ts'],
+    format: ['esm'],
+    platform: 'neutral',
     sourcemap: true,
-    reportCompressedSize: true,
-    lib: {
-      entry: resolve(__dirname, 'lib/index.ts'),
-      name: 'MaplibreGlDrawCircle',
-      formats: ['es', 'cjs', 'umd'],
-      fileName: 'maplibre-gl-draw-circle',
-    },
-    commonjsOptions: {
-      extensions: ['.js', '.ts'],
-      strictRequires: true,
-      exclude: 'lib/**',
-      include: 'node_modules/**',
-    },
-    rollupOptions: {
-      // make sure to externalize deps that shouldn't be bundled
-      // into your library
-      external: ['@mapbox/mapbox-gl-draw'],
-      output: {
-        banner,
-        exports: 'named',
-        strict: true,
-        sourcemap: true,
-        extend: true,
-        // Provide global variables to use in the UMD build
-        // for externalized deps
-        globals: {
-          '@mapbox/mapbox-gl-draw': 'mapboxGlDraw',
-        },
-      },
+    dts: true,
+    deps: {
+      neverBundle: ['@mapbox/mapbox-gl-draw'],
     },
   },
-  plugins: [
-    dts({
-      outputDir: ['dist'],
-      insertTypesEntry: true,
-    }),
-  ],
-  test: {
-    globals: true,
+  lint: {
+    plugins: ['typescript', 'import'],
+    ignorePatterns: [
+      'dist',
+      'node_modules',
+      'coverage',
+      'vendor',
+      '*.config.ts',
+    ],
+    options: {
+      typeAware: true,
+      typeCheck: true,
+    },
+    rules: {
+      'no-console': ['error', { allow: ['error'] }],
+      'no-debugger': 'error',
+      eqeqeq: 'error',
+      'no-var': 'error',
+      'prefer-const': 'error',
+      'typescript/no-explicit-any': 'warn',
+      'typescript/no-unused-vars': 'error',
+      'typescript/no-floating-promises': 'error',
+      'typescript/no-unsafe-assignment': 'warn',
+      'import/no-cycle': 'error',
+      'import/no-duplicates': 'error',
+    },
+  },
+  fmt: {
+    printWidth: 80,
+    semi: true,
+    singleQuote: true,
+    tabWidth: 2,
+    trailingComma: 'all',
+    bracketSpacing: true,
+    arrowParens: 'always',
+    endOfLine: 'lf',
+    ignorePatterns: [
+      'dist',
+      'node_modules',
+      'coverage',
+      'vendor',
+      'pnpm-lock.yaml',
+      '*.lock',
+      'CHANGELOG.md',
+      'jsr.json',
+    ],
   },
 });

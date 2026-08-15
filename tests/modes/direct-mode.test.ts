@@ -1,37 +1,109 @@
-import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type Mock,
+} from 'vitest';
+import DirectModeDefault from '../../lib/modes/direct-mode';
+import createSupplementaryPointsDefault from '../../vendor/mapbox-gl-draw/src/lib/create_supplementary_points.js';
+import moveFeaturesDefault from '../../vendor/mapbox-gl-draw/src/lib/move_features.js';
+import { createSupplementaryPointsForCircle as cspfcDefault } from '../../lib/utils/create-supplementary-points-for-circle';
+import distanceImport from '@turf/distance';
+import circleImport from '@turf/circle';
 
-vi.mock('@mapbox/mapbox-gl-draw/src/lib/create_supplementary_points');
-vi.mock('@mapbox/mapbox-gl-draw/src/lib/move_features');
-vi.mock('@mapbox/mapbox-gl-draw/src/lib/constrain_feature_movement');
 vi.mock('@turf/distance', () => ({ default: vi.fn() }));
-vi.mock('@turf/helpers');
 vi.mock('@turf/circle', () => ({ default: vi.fn() }));
-vi.mock('../../lib/utils/create-supplementary-points-for-circle');
-
-const createSupplementaryPoints = import(
-  '@mapbox/mapbox-gl-draw/src/lib/create_supplementary_points'
+vi.mock(
+  '../../vendor/mapbox-gl-draw/src/lib/create_supplementary_points.js',
+  () => ({
+    default: vi.fn(),
+  }),
 );
-const moveFeatures = import('@mapbox/mapbox-gl-draw/src/lib/move_features');
-const distance = import('@turf/distance').default;
-const circle = import('@turf/circle').default;
-const createSupplementaryPointsForCircle = import(
-  '../../lib/utils/create-supplementary-points-for-circle'
-);
+vi.mock('../../vendor/mapbox-gl-draw/src/lib/move_features.js', () => ({
+  default: vi.fn(),
+}));
+vi.mock('../../lib/utils/create-supplementary-points-for-circle', () => ({
+  createSupplementaryPointsForCircle: vi.fn(),
+}));
 
-let DirectMode = import('../../lib/modes/direct-mode');
+const distance = vi.mocked(distanceImport);
+const circle = vi.mocked(circleImport);
+const createSupplementaryPoints = vi.mocked(createSupplementaryPointsDefault);
+const moveFeatures = vi.mocked(moveFeaturesDefault);
+const createSupplementaryPointsForCircle = vi.mocked(cspfcDefault);
+
+interface DirectModeTest {
+  dragFeature(
+    state: {
+      dragMoveLocation?: { lng: number; lat: number };
+      featureId?: number;
+      feature?: {
+        properties: {
+          isCircle?: boolean;
+          center?: number[];
+          radiusInKm?: number;
+        };
+        incomingCoords?: Mock;
+        getCoordinate?: Mock;
+        updateCoordinate?: Mock;
+      };
+      selectedCoordPaths?: string[];
+    },
+    e: { lngLat: { lat: number; lng: number } },
+    delta: { lat: number; lng: number },
+  ): void;
+  dragVertex(
+    state: {
+      feature?: {
+        properties: {
+          isCircle?: boolean;
+          center?: number[];
+          radiusInKm?: number;
+        };
+        incomingCoords?: Mock;
+        getCoordinate?: Mock;
+        updateCoordinate?: Mock;
+      };
+      selectedCoordPaths?: string[];
+    },
+    e: { lngLat: { lat: number; lng: number } },
+    delta: { lat: number; lng: number },
+  ): void;
+  toDisplayFeatures(
+    state: {
+      featureId?: number;
+      feature?: unknown;
+      selectedCoordPaths?: string[];
+    },
+    geojson: {
+      properties?: { id?: number; user_isCircle?: boolean; active?: string };
+      geometry?: { type: string };
+    },
+    display: Mock,
+  ): void;
+  getSelected: Mock;
+  fireActionable: Mock;
+}
+
+const DirectMode = DirectModeDefault as unknown as DirectModeTest;
 
 describe('DirectMode tests', () => {
-  let mockState = {};
-  let mockEvent = {};
-  let mockDelta = {};
-  let mockFeatures;
+  let mockState: Parameters<DirectModeTest['dragFeature']>[0] = {};
+  let mockEvent: { lngLat: { lat: number; lng: number } };
+  let mockDelta: { lat: number; lng: number };
+  let mockFeatures: Array<{
+    properties: { isCircle?: boolean; center?: number[] };
+    geometry: { coordinates: unknown[] };
+  }>;
 
   beforeEach(() => {
-    DirectMode = {
-      ...DirectMode,
+    Object.assign(DirectMode, {
       getSelected: vi.fn(),
       fireActionable: vi.fn(),
-    };
+    });
 
     mockEvent = {
       lngLat: { lat: 0, lng: 0 },
@@ -57,14 +129,13 @@ describe('DirectMode tests', () => {
       feature: {
         ...mockFeatures[0],
         incomingCoords: vi.fn(),
-      },
+      } as NonNullable<NonNullable<typeof mockState>['feature']>,
     };
     DirectMode.getSelected.mockReturnValue(mockFeatures);
   });
 
   afterEach(() => {
-    createSupplementaryPoints.mockClear();
-    createSupplementaryPointsForCircle.mockClear();
+    vi.clearAllMocks();
   });
 
   it('should move selected features when dragFeature is invoked', () => {
@@ -84,12 +155,16 @@ describe('DirectMode tests', () => {
 
   it('should update the radius when dragVertex is invoked and the feature is a circle', () => {
     distance.mockReturnValue(1);
-    circle.mockReturnValue(mockFeatures[0]);
+    circle.mockReturnValue(
+      mockFeatures[0] as unknown as Parameters<
+        typeof circle.mockReturnValue
+      >[0],
+    );
     DirectMode.dragVertex(mockState, mockEvent, mockDelta);
-    expect(mockState.feature.incomingCoords).toHaveBeenCalledWith(
+    expect(mockState.feature!.incomingCoords).toHaveBeenCalledWith(
       mockFeatures[0].geometry.coordinates,
     );
-    expect(mockState.feature.properties.radiusInKm).toEqual(1);
+    expect(mockState.feature!.properties.radiusInKm).toEqual(1);
   });
 
   it(`should display points generated using 

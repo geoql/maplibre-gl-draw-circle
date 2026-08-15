@@ -1,31 +1,78 @@
-import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type Mock,
+} from 'vitest';
+import type { Position } from 'geojson';
+import SimpleSelectModeDefault from '../../lib/modes/simple-select-mode';
+import createSupplementaryPointsDefault from '../../vendor/mapbox-gl-draw/src/lib/create_supplementary_points.js';
+import moveFeaturesDefault from '../../vendor/mapbox-gl-draw/src/lib/move_features.js';
+import { createSupplementaryPointsForCircle as cspfcDefault } from '../../lib/utils/create-supplementary-points-for-circle';
 
-vi.mock('@mapbox/mapbox-gl-draw/src/lib/create_supplementary_points');
-vi.mock('@mapbox/mapbox-gl-draw/src/lib/move_features');
-vi.mock('../../lib/utils/create-supplementary-points-for-circle');
-
-const createSupplementaryPoints = import(
-  '@mapbox/mapbox-gl-draw/src/lib/create_supplementary_points'
+vi.mock(
+  '../../vendor/mapbox-gl-draw/src/lib/create_supplementary_points.js',
+  () => ({
+    default: vi.fn(),
+  }),
 );
-const moveFeatures = import('@mapbox/mapbox-gl-draw/src/lib/move_features');
-const createSupplementaryPointsForCircle = import(
-  '../../lib/utils/create-supplementary-points-for-circle'
-);
+vi.mock('../../vendor/mapbox-gl-draw/src/lib/move_features.js', () => ({
+  default: vi.fn(),
+}));
+vi.mock('../../lib/utils/create-supplementary-points-for-circle', () => ({
+  createSupplementaryPointsForCircle: vi.fn(),
+}));
 
-let SimpleSelectMode = import('../../lib/modes/simple-select-mode');
+const createSupplementaryPoints = vi.mocked(createSupplementaryPointsDefault);
+const moveFeatures = vi.mocked(moveFeaturesDefault);
+const createSupplementaryPointsForCircle = vi.mocked(cspfcDefault);
+
+interface SimpleSelectModeTest {
+  dragMove(
+    state: {
+      dragMoving?: boolean;
+      dragMoveLocation?: { lng: number; lat: number };
+    },
+    e: {
+      originalEvent: { stopPropagation: Mock };
+      lngLat: { lng: number; lat: number };
+    },
+  ): void;
+  toDisplayFeatures(
+    state: { dragMoveLocation?: { lng: number; lat: number } },
+    geojson: {
+      geometry?: { type: string };
+      properties?: { user_isCircle?: boolean; active?: string };
+    },
+    display: Mock,
+  ): void;
+  getSelected: Mock;
+  isSelected: Mock;
+  fireActionable: Mock;
+}
+
+const SimpleSelectMode =
+  SimpleSelectModeDefault as unknown as SimpleSelectModeTest;
 
 describe('SimpleSelectMode tests', () => {
-  let mockState = {};
-  let mockEvent = {};
-  let mockFeatures;
+  let mockState: Parameters<SimpleSelectModeTest['dragMove']>[0] = {};
+  let mockEvent: Parameters<SimpleSelectModeTest['dragMove']>[1] = {
+    originalEvent: { stopPropagation: vi.fn() },
+    lngLat: { lng: 2, lat: 2 },
+  };
+  let mockFeatures: Array<{
+    properties: { isCircle?: boolean; center?: number[] };
+  }>;
 
   beforeEach(() => {
-    SimpleSelectMode = {
-      ...SimpleSelectMode,
+    Object.assign(SimpleSelectMode, {
       getSelected: vi.fn(),
       isSelected: vi.fn(),
       fireActionable: vi.fn(),
-    };
+    });
 
     mockState = {
       dragMoving: false,
@@ -58,9 +105,7 @@ describe('SimpleSelectMode tests', () => {
   });
 
   afterEach(() => {
-    createSupplementaryPoints.mockClear();
-    createSupplementaryPointsForCircle.mockClear();
-    moveFeatures.mockClear();
+    vi.clearAllMocks();
   });
 
   it('should move selected features when dragMove is invoked', () => {
@@ -77,7 +122,17 @@ describe('SimpleSelectMode tests', () => {
 
   it('should display points generated using createSupplementaryPointsForCircle', () => {
     SimpleSelectMode.isSelected.mockReturnValue(true);
-    createSupplementaryPointsForCircle.mockReturnValue([{}]);
+    const mockSupplementary = {
+      type: 'Feature' as const,
+      properties: {
+        user_isCircle: true,
+      },
+      geometry: {
+        type: 'Polygon' as const,
+        coordinates: [[[0, 0]]] as Position[][],
+      },
+    };
+    createSupplementaryPointsForCircle.mockReturnValue([mockSupplementary]);
     const mockGeoJSON = {
       geometry: {
         type: 'Polygon',
@@ -91,7 +146,7 @@ describe('SimpleSelectMode tests', () => {
     expect(SimpleSelectMode.fireActionable).toHaveBeenCalled();
     expect(mockDisplay.mock.calls).toEqual([
       [mockGeoJSON],
-      [{}, 0, [{}]], // second and third elements are passed by Array.forEach
+      [mockSupplementary, 0, [mockSupplementary]], // second and third elements are passed by Array.forEach
     ]);
   });
 
