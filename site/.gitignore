@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Nuxt / Nitro / Cloudflare build output
+.nuxt
+.nitro
+.output
+.data
+.cache
+.wrangler
+dist
+
+# Environment
+.env
+.env.*
+!.env.example
+.dev.vars
+
+# Logs
+*.log
+
+# Coverage
+coverage
+
+# OS / editor
+.DS_Store
+.idea
+*.swp
+
+# Agent tooling
+.sisyphus
+.omo
+.cortexkit
+tmp/

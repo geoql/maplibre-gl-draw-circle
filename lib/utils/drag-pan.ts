@@ -9,8 +9,12 @@ type DrawContext = DrawCustomModeThis & {
   };
 };
 
+/**
+ * Arrow properties, not methods: they never read `this`, so they are safe to
+ * pass around unbound.
+ */
 export default {
-  enable(ctx: DrawContext) {
+  enable: (ctx: DrawContext): void => {
     setTimeout(() => {
       // First check we've got a map and some context.
       if (
@@ -26,7 +30,7 @@ export default {
       ctx.map.dragPan.enable();
     }, 0);
   },
-  disable(ctx: DrawContext) {
+  disable: (ctx: DrawContext): void => {
     setTimeout(() => {
       if (!ctx.map || !ctx.map.doubleClickZoom) return;
       // Always disable here, as it's necessary in some cases.

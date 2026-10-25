@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    .bg { fill: oklch(0.21 0.014 260); }
+    .mark { fill: oklch(0.72 0.15 48); }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: oklch(0.95 0.008 85); }
+      .mark { fill: oklch(0.6 0.17 42); }
+    }
+  </style>
+  <rect class="bg" width="32" height="32" rx="6" />
+  <path class="mark" d="M16 7 L25 23 L7 23 Z" />
+</svg>

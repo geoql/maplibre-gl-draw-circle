@@ -8,7 +8,7 @@
 import type { MapMouseEvent, MapTouchEvent } from '@mapbox/mapbox-gl-draw';
 
 declare module '@mapbox/mapbox-gl-draw' {
-  interface DrawCustomMode<CustomModeState = any, CustomModeOptions = any> {
+  interface DrawCustomMode<CustomModeState, CustomModeOptions> {
     clickAnywhere?(
       this: import('@mapbox/mapbox-gl-draw').DrawCustomModeThis & this,
       state: CustomModeState,

@@ -20,6 +20,8 @@ Adds support for drawing and editing a circle feature using [mapbox-gl-draw](htt
 
 ## Demo
 
+Live demo: **[maplibre-gl-draw-circle.geoql.in](https://maplibre-gl-draw-circle.geoql.in)** — draw, drag, move and resize circles on a MapLibre GL map. Its source is in [`site/`](site).
+
 ##### Circle mode
 
 ![Circle Mode Demo](demo/CircleModeDemo.gif)
@@ -33,7 +35,7 @@ Adds support for drawing and editing a circle feature using [mapbox-gl-draw](htt
 ### Installation
 
 ```
-npm install maplibre-gl-draw-circle
+pnpm add @geoql/maplibre-gl-draw-circle @mapbox/mapbox-gl-draw maplibre-gl
 ```
 
 ```
@@ -42,7 +44,7 @@ import {
     DragCircleMode,
     DirectMode,
     SimpleSelectMode
-} from 'maplibre-gl-draw-circle';
+} from '@geoql/maplibre-gl-draw-circle';
 
 
 // userProperties has to be enabled
@@ -68,6 +70,11 @@ The default radius units are in **kilometers** and initial radius is **2km**.
 // Provide the default radius as an option to CircleMode
 draw.changeMode('draw_circle', { initialRadiusInKm: 0.5 });
 ```
+
+With MapLibre GL 6, pass mapbox-gl-draw a `styles` array written with
+modern expressions: its built-in theme uses legacy filter syntax that the
+MapLibre 6 style spec rejects. The demo's theme is in
+[`site/app/utils/draw-theme.ts`](site/app/utils/draw-theme.ts).
 
 It fires the same events as the mapbox-gl-draw library. For more information follow this [link](https://github.com/mapbox/mapbox-gl-draw/blob/master/docs/API.md#events).
 
