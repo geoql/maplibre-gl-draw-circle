@@ -98,8 +98,21 @@ DragCircleMode.toDisplayFeatures = function (
   feature.properties.active = isActivePolygon
     ? Constants.activeStates.ACTIVE
     : Constants.activeStates.INACTIVE;
+  // Until the first drag the circle has an empty ring. Rendering it makes
+  // MapLibre GL 6's GeoJSON worker throw, so wait for a real ring (as
+  // draw_polygon does for its own in-progress polygon).
+  if (isActivePolygon && !hasRing(feature)) return;
   return display(feature as Feature);
 };
+
+/** A closed polygon ring needs at least four positions. */
+function hasRing(feature: Feature): boolean {
+  const ring =
+    feature.geometry.type === 'Polygon'
+      ? feature.geometry.coordinates[0]
+      : undefined;
+  return ring !== undefined && ring.length >= 4;
+}
 
 export default DragCircleMode;
 export { DragCircleMode };
