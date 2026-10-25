@@ -106,7 +106,10 @@ interface DragCircleModeTest {
   onTouchEnd(state: { polygon: { id?: string } }, e: unknown): void;
   toDisplayFeatures(
     state: { polygon: { id?: string } },
-    geojson: { properties: { id?: string; active?: string } },
+    geojson: {
+      properties: { id?: string; active?: string };
+      geometry: { type: string; coordinates: unknown[] };
+    },
     display: Mock,
   ): void;
   addFeature: Mock;
@@ -296,12 +299,48 @@ describe('DragCircleMode', function () {
         id: 'test-id',
         active: undefined as string | undefined,
       },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [0, 0],
+            [1, 0],
+            [1, 1],
+            [0, 0],
+          ],
+        ],
+      },
     };
 
     const display = vi.fn();
 
     DragCircleMode.toDisplayFeatures(state, geojson, display);
     expect(geojson.properties.active).toEqual(Constants.activeStates.ACTIVE);
+    expect(display).toHaveBeenCalledWith(geojson);
+  });
+
+  it('should not display the active circle before the first drag', function () {
+    const state = { polygon: { id: 'test-id' } };
+    const geojson = {
+      properties: { id: 'test-id', active: undefined as string | undefined },
+      geometry: { type: 'Polygon', coordinates: [[]] },
+    };
+    const display = vi.fn();
+
+    DragCircleMode.toDisplayFeatures(state, geojson, display);
+    expect(display).not.toHaveBeenCalled();
+  });
+
+  it('should still display other, finished features', function () {
+    const state = { polygon: { id: 'drawing' } };
+    const geojson = {
+      properties: { id: 'other', active: undefined as string | undefined },
+      geometry: { type: 'Polygon', coordinates: [[]] },
+    };
+    const display = vi.fn();
+
+    DragCircleMode.toDisplayFeatures(state, geojson, display);
+    expect(geojson.properties.active).toEqual(Constants.activeStates.INACTIVE);
     expect(display).toHaveBeenCalledWith(geojson);
   });
 

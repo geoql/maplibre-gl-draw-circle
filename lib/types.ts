@@ -39,6 +39,11 @@ export type CircleGeoJSONFeature = Feature & {
   properties: CircleFeatureProperties;
 };
 
+/** Options accepted by `draw.changeMode('draw_circle', options)`. */
+export interface CircleModeOptions {
+  initialRadiusInKm?: number;
+}
+
 /** State for CircleMode (extends draw_polygon). */
 export interface CircleModeState {
   initialRadiusInKm: number;

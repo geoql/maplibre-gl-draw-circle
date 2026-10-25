@@ -1,9 +1,13 @@
-packages: []
+packages:
+  - site
 
 overrides:
   # Keep `vite` (peer/type-only in this workspace) on the same instance as Vite+
   # so there is never a split Vite copy.
-  vite: npm:@voidzero-dev/vite-plus-core@0.2.9
+  vite: npm:@voidzero-dev/vite-plus-core@1.4.0
+  # Nuxt 4.5+ runs on unhead v3. Keep one copy on the release that fixed the
+  # Cloudflare preset build break (nuxt/nuxt#35670).
+  unhead: '>=3.4.3'
 
 peerDependencyRules:
   allowedVersions:
@@ -11,4 +15,9 @@ peerDependencyRules:
     vite: '*'
 
 allowBuilds:
+  '@parcel/watcher': false
   esbuild: true
+  sharp: false
+  unrs-resolver: true
+  vue-demi: false
+  workerd: true

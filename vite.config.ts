@@ -18,6 +18,7 @@ export default defineConfig({
       'node_modules',
       'coverage',
       'vendor',
+      'site',
       '*.config.ts',
     ],
     options: {
@@ -52,6 +53,7 @@ export default defineConfig({
       'node_modules',
       'coverage',
       'vendor',
+      'site',
       'pnpm-lock.yaml',
       '*.lock',
       'CHANGELOG.md',

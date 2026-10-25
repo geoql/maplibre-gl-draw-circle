@@ -1,4 +1,4 @@
-import { modes } from '@mapbox/mapbox-gl-draw';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import {
   geojsonTypes,
   cursors,
@@ -8,12 +8,12 @@ import {
 import doubleClickZoom from '../../vendor/mapbox-gl-draw/src/lib/double_click_zoom.js';
 import circle from '@turf/circle';
 import type { DrawCustomMode } from '@mapbox/mapbox-gl-draw';
-import type { CircleModeState } from '../types';
+import type { CircleModeOptions, CircleModeState } from '../types';
 
-const CircleMode: DrawCustomMode = { ...modes.draw_polygon };
+const CircleMode: DrawCustomMode = { ...MapboxDraw.modes.draw_polygon };
 const DEFAULT_RADIUS_IN_KM = 2;
 
-CircleMode.onSetup = function (opts) {
+CircleMode.onSetup = function (opts: CircleModeOptions) {
   const polygon = this.newFeature({
     type: geojsonTypes.FEATURE,
     properties: {
