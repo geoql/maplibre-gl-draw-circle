@@ -18,6 +18,18 @@
 
 
 
+## [0.1.3](https://github.com/geoql/maplibre-gl-draw-circle/compare/v0.1.2...v0.1.3) (2026-10-25)
+
+
+### Features
+
+* **demo:** enable ga4 ([#216](https://github.com/geoql/maplibre-gl-draw-circle/issues/216)) ([942e318](https://github.com/geoql/maplibre-gl-draw-circle/commit/942e318aa4b471c8de956e74eef6c6a59603b6e1))
+
+
+### Bug Fixes
+
+* maplibre gl 6 support, live demo on cloudflare workers, pnpm and latest deps ([#214](https://github.com/geoql/maplibre-gl-draw-circle/issues/214)) ([508a6eb](https://github.com/geoql/maplibre-gl-draw-circle/commit/508a6eb6a5cf8bd68e193681dd99ffd043265e63))
+
 ## [0.1.2](https://github.com/geoql/maplibre-gl-draw-circle/compare/v0.1.1...v0.1.2) (2026-08-15)
 
 
