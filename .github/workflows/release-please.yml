@@ -66,6 +66,11 @@ jobs:
           VERSION="${{ needs.release-please.outputs.version || github.event.inputs.tag }}"
           echo "version=${VERSION#v}" >> "$GITHUB_OUTPUT"
 
+      - name: Show OIDC claims (debug)
+        run: |
+          T=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=npm:registry.npmjs.org" | jq -r .value)
+          echo "$T" | cut -d. -f2 | tr "_-" "/+" | base64 -d 2>/dev/null | jq -c "{sub,repository,repository_id,repository_owner,repository_owner_id,workflow_ref,job_workflow_ref,ref,event_name,environment,runner_environment,aud}" || true
+
       - name: Publish to npm with provenance
         env:
           NPM_CONFIG_LOGLEVEL: verbose
