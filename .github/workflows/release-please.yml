@@ -73,7 +73,7 @@ jobs:
           if npm view @geoql/maplibre-gl-draw-circle@${{ steps.version.outputs.version }} version >/dev/null 2>&1; then
             echo "@geoql/maplibre-gl-draw-circle@${{ steps.version.outputs.version }} already published, skipping"
           else
-            npm publish --provenance --access public --ignore-scripts
+            npx -y npm@latest publish --provenance --access public --ignore-scripts
           fi
 
       - name: Publish to JSR
