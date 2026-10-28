@@ -18,6 +18,13 @@
 
 
 
+## [0.1.4](https://github.com/geoql/maplibre-gl-draw-circle/compare/v0.1.3...v0.1.4) (2026-10-28)
+
+
+### Documentation
+
+* link live demo and related projects ([#218](https://github.com/geoql/maplibre-gl-draw-circle/issues/218)) ([6cbe22a](https://github.com/geoql/maplibre-gl-draw-circle/commit/6cbe22a16127529a47a44582ad54639583c3b76a))
+
 ## [0.1.3](https://github.com/geoql/maplibre-gl-draw-circle/compare/v0.1.2...v0.1.3) (2026-10-25)
 
 
