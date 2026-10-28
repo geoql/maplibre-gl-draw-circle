@@ -36,7 +36,7 @@
     "oxfmt": "^0.74.0",
     "oxlint": "^1.89.0",
     "tailwindcss": "^4.3.3",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vite-plus": "^1.4.0",
     "vue-tsc": "^3.3.13",
     "wrangler": "^4.152.0"
