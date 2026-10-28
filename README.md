@@ -1,8 +1,6 @@
 # maplibre-gl-draw-circle 🌎
 
 [![CI](https://img.shields.io/github/actions/workflow/status/vinayakkulkarni/maplibre-gl-draw-circle/ci.yml?logo=github-actions&branch=main)](https://github.com/vinayakkulkarni/maplibre-gl-draw-circle/actions/workflows/ci.yml)
-[![CodeQL](https://img.shields.io/github/actions/workflow/status/vinayakkulkarni/maplibre-gl-draw-circle/codeql.yml?logo=github-actions&branch=main)](https://github.com/vinayakkulkarni/maplibre-gl-draw-circle/actions/workflows/codeql.yml)
-[![Ship.js Trigger](https://img.shields.io/github/actions/workflow/status/vinayakkulkarni/maplibre-gl-draw-circle/shipjs-trigger.yml?label=⛴%20Ship.js%20trigger)](https://github.com/vinayakkulkarni/maplibre-gl-draw-circle/actions/workflows/shipjs-trigger.yml)
 [![npm](https://img.shields.io/npm/dm/maplibre-gl-draw-circle?logo=npm)](http://npm-stat.com/charts.html?package=maplibre-gl-draw-circle)
 [![npm](https://img.shields.io/npm/v/maplibre-gl-draw-circle/latest?logo=npm)](https://www.npmjs.com/package/maplibre-gl-draw-circle)
 [![npm bundle size (version)](https://img.shields.io/bundlephobia/min/maplibre-gl-draw-circle/latest?label=@latest%20size&logo=vue.js)](https://bundlephobia.com/package/maplibre-gl-draw-circle@latest)
@@ -15,6 +13,8 @@
 [![prettier](https://img.shields.io/npm/dependency-version/maplibre-gl-draw-circle/dev/prettier?logo=prettier)](https://prettier.io/)
 [![vite](https://img.shields.io/npm/dependency-version/maplibre-gl-draw-circle/dev/vite?logo=vite)](https://vitejs.dev/)
 [![typescript](https://img.shields.io/npm/dependency-version/maplibre-gl-draw-circle/dev/typescript?logo=TypeScript)](https://www.typescriptlang.org/)
+
+**[Live demo](https://maplibre-gl-draw-circle.geoql.in/?utm_source=github&utm_medium=readme&utm_campaign=maplibre-gl-draw-circle)** · [npm](https://www.npmjs.com/package/@geoql/maplibre-gl-draw-circle) · [JSR](https://jsr.io/@geoql/maplibre-gl-draw-circle)
 
 Adds support for drawing and editing a circle feature using [mapbox-gl-draw](https://github.com/mapbox/mapbox-gl-draw) library.
 
@@ -105,3 +105,14 @@ Sample feature object returned in `draw.create` event
 
 - Added a new DragCircle mode.
 - Fixed issue (#5), where the polygon mode was not working when used along with CircleMode.
+
+## More from the author
+
+- [maplibre-gl-inspect](https://maplibre-gl-inspect.geoql.in/?utm_source=github&utm_medium=readme&utm_campaign=maplibre-gl-draw-circle) — inspect vector tile features and their properties
+- [maplibre-gl-compare](https://maplibre-gl-compare.geoql.in/?utm_source=github&utm_medium=readme&utm_campaign=maplibre-gl-draw-circle) — swipe-style map comparison control
+- [maplibre-gl-interpolate-heatmap](https://maplibre-gl-interpolate-heatmap.geoql.in/?utm_source=github&utm_medium=readme&utm_campaign=maplibre-gl-draw-circle) — IDW interpolated heatmap layer
+- [maplibre-gl-snow](https://maplibre-gl-snow.geoql.in/?utm_source=github&utm_medium=readme&utm_campaign=maplibre-gl-draw-circle) — WebGPU snow particle layer
+- [v-maplibre](https://v-maplibre.geoql.in/?utm_source=github&utm_medium=readme&utm_campaign=maplibre-gl-draw-circle) — 50+ Vue 3 components for MapLibre GL
+- [mapcn-vue](https://mapcn-vue.geoql.in/?utm_source=github&utm_medium=readme&utm_campaign=maplibre-gl-draw-circle) — shadcn-vue map components you copy into your app
+
+See every project at [vinayakkulkarni.dev/projects](https://vinayakkulkarni.dev/projects?utm_source=github&utm_medium=readme&utm_campaign=maplibre-gl-draw-circle) and [geoql.in](https://geoql.in/?utm_source=github&utm_medium=readme&utm_campaign=maplibre-gl-draw-circle).
