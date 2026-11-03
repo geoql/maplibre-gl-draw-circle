@@ -33,7 +33,7 @@
     "@types/geojson": "^7946.0.16",
     "@types/mapbox__mapbox-gl-draw": "^1.4.9",
     "@types/node": "^26.6.5",
-    "oxfmt": "^0.74.0",
+    "oxfmt": "^0.75.0",
     "oxlint": "^1.89.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
